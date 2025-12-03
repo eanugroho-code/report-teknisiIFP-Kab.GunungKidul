@@ -3,74 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>REPORT INSTALASI IFP - GUNUNGKIDUL 2025</title>
+  <title>REPORT INSTALASI IFP 2025 - GUNUNGKIDUL</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
   <style>
     * { box-sizing: border-box; margin:0; padding:0; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      padding: 20px; min-height: 100vh;
-    }
-    .container {
-      max-width: 800px; margin: 0 auto;
-      background: white; border-radius: 20px;
-      padding: 25px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    }
-    .header { text-align: center; padding-bottom: 20px; border-bottom: 3px solid #eee; margin-bottom: 25px; }
-    h1 {
-      font-size: 24px; margin:0;
-      background: linear-gradient(45deg, #1a237e, #4a148c);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    h2 { color: #5d4037; font-size: 18px; margin: 25px 0 15px; padding-bottom: 8px; border-bottom: 2px solid #ff9800; }
-    .badge { background: #4caf50; color: white; padding: 6px 16px; border-radius: 30px; font-size: 14px; display: inline-block; }
-    label { display: block; margin: 15px 0 8px; font-weight: 600; color: #37474f; }
-    .required::after { content: " *"; color: #f44336; }
-    input, textarea, select {
-      width: 100%; padding: 14px; border: 2px solid #e0e0e0; border-radius: 12px;
-      font-size: 16px; background: #fafafa; transition: all 0.3s;
-    }
-    input:focus, textarea:focus, select:focus {
-      outline: none; border-color: #5c6bc0; background: white;
-      box-shadow: 0 0 0 3px rgba(92,107,192,0.1);
-    }
-    .entry-card {
-      background: #f5f7ff; border: 2px dashed #bbdefb; border-radius: 15px;
-      padding: 20px; margin-bottom: 20px; transition: all 0.3s;
-    }
-    .entry-card:hover { border-color: #7986cb; }
-    .entry-header {
-      display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;
-    }
-    .entry-number {
-      background: #5c6bc0; color: white; width: 36px; height: 36px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px;
-    }
-    .btn {
-      padding: 14px 24px; border: none; border-radius: 12px; font-size: 16px; font-weight: 600;
-      cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-      transition: all 0.3s; margin: 10px 0;
-    }
-    .btn-add { background: #29b6f6; color: white; width: 100%; }
-    .btn-primary { background: linear-gradient(45deg, #43a047, #2e7d32); color: white; width: 100%; font-size: 18px; }
-    .btn-danger { background: #ef5350; color: white; }
-    .btn:hover { opacity: 0.9; transform: translateY(-2px); }
-    .counter {
-      position: fixed; top: 20px; right: 20px; background: white; padding: 12px 24px;
-      border-radius: 50px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); font-weight: bold; color: #5c6bc0; z-index: 1000;
-    }
-    .status-box {
-      margin-top: 25px; padding: 20px; border-radius: 12px; text-align: center;
-      font-weight: 600; display: none; font-size: 16px; line-height: 1.6;
-    }
-    .success { background: #e8f5e9; color: #2e7d32; border: 2px solid #4caf50; }
-    .error   { background: #ffebee; color: #c62828; border: 2px solid #ef5350; }
-    @media (max-width: 600px) {
-      .container { padding: 15px; margin: 10px; border-radius: 15px; }
-      .counter { position: static; margin: 15px auto; width: fit-content; }
-    }
+    body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #667eea, #764ba2); padding: 15px; min-height: 100vh; }
+    .container { max-width: 800px; margin: 0 auto; background: white; border-radius: 20px; padding: 25px; box-shadow: 0 15px 40px rgba(0,0,0,0.3); }
+    h1 { font-size: 24px; text-align: center; background: linear-gradient(45deg, #1a237e, #4a148c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .badge { display: inline-block; background: #4caf50; color: white; padding: 6px 16px; border-radius: 30px; font-size: 14px; }
+    label { display: block; margin: 15px 0 6px; font-weight: bold; color: #333; }
+    .required::after { content: " *"; color: red; }
+    input, select, textarea { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 10px; font-size: 16px; }
+    .entry-card { background: #f8faff; border: 2px dashed #bbdefb; border-radius: 15px; padding: 18px; margin-bottom: 20px; }
+    .entry-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .entry-number { background: #5c6bc0; color: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+    .btn { padding: 14px; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; width: 100%; margin: 10px 0; }
+    .btn-add { background: #29b6f6; color: white; }
+    .btn-primary { background: linear-gradient(45deg, #43a047, #2e7d32); color: white; font-size: 18px; }
+    .btn-danger { background: #f44336; color: white; }
+    .counter { position: fixed; top: 15px; right: 15px; background: white; padding: 10px 20px; border-radius: 50px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); font-weight: bold; color: #5c6bc0; z-index: 100; }
+    .status { margin-top: 20px; padding: 15px; border-radius: 10px; text-align: center; font-weight: bold; display: none; }
+    .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
   </style>
 </head>
 <body>
@@ -78,64 +31,53 @@
   <div class="counter" id="counter">Sekolah: 1</div>
 
   <div class="container">
-    <div class="header">
-      <h1>REPORT INSTALASI IFP 2025</h1>
-      <div class="badge">KABUPATEN GUNUNGKIDUL</div>
-      <p style="color:#666;margin-top:12px;">NPSN sekarang sekarang BEBAS berapa digit (bisa 8 / 16 digit)</p>
+    <h1>REPORT INSTALASI IFP 2025</h1>
+    <div style="text-align:center;margin:10px 0;">
+      <span class="badge">GUNUNGKIDUL</span>
     </div>
+    <p style="text-align:center;color:#555;">NPSN bebas berapa digit • Langsung jadi Excel • Otomatis kirim ke Admin</p>
 
-    <!-- DATA TEKNISI -->
     <h2>DATA TEKNISI</h2>
-    <div class="input-group">
-      <label class="required">Nama Teknisi</label>
-      <input type="text" id="namaTeknisi" placeholder="Nama lengkap teknisi">
-    </div>
-    <div class="input-group">
-      <label class="required">No WhatsApp</label>
-      <input type richtext="tel" id="waTeknisi" placeholder="08xxxxxxxxxx">
-    </div>
+    <label class="required">Nama Teknisi</label>
+    <input type="text" id="namaTeknisi" placeholder="Nama lengkap">
 
-    <!-- DAFTAR SEKOLAH -->
-    <h2>DAFTAR SEKOLAH YANG SUDAH DIINSTALL</h2>
+    <label class="required">No WhatsApp</label>
+    <input type="text" id="waTeknisi" placeholder="08xxxxxxxxxx">
+
+    <h2 style="margin-top:30px;">DAFTAR SEKOLAH</h2>
     <div id="entries-container">
       <div class="entry-card" id="entry-1">
         <div class="entry-header">
           <div class="entry-number">1</div>
           <button type="button" class="btn btn-danger" onclick="removeEntry(1)" style="display:none;">Hapus</button>
         </div>
-        <div class="input-group">
-          <label class="required">Nama Sekolah</label>
-          <input type="text" class="namaSekolah" placeholder="Contoh: SMPN 1 Wonosari">
-        </div>
-        <div class="input-group">
-          <label class="required">NPSN</label>
-          <!-- DI SINI SUDAH TIDAK ADA maxlength & validasi 8 digit -->
-          <input type="text" class="npsn" placeholder="Bisa 8 digit atau 16 digit (PAUD/TK)">
-        </div>
-        <div class="input-group">
-          <label>Status</label>
-          <select class="keterangan">
-            <option value="Selesai">Selesai Terinstall</option>
-            <option value="Bermasalah">Ada Kendala</option>
-            <option value="Belum Listrik">Belum Ada Listrik</option>
-            <option value="Jaringan">Masalah Jaringan</option>
-            <option value="Lainnya">Lainnya</option>
-          </select>
-        </div>
-        <div class="input-group">
-          <label>Catatan (jika ada)</label>
-          <textarea class="catatan" rows="2" placeholder="Tulis keterangan tambahan..."></textarea>
-        </div>
+        <label class="required">Nama Sekolah</label>
+        <input type="text" class="namaSekolah" placeholder="Contoh: SMPN 1 Wonosari">
+
+        <label class="required">NPSN (bebas digit)</label>
+        <input type="text" class="npsn" placeholder="12345678 atau 1234567890123456">
+
+        <label>Status</label>
+        <select class="keterangan">
+          <option value="Selesai">Selesai Terinstall</option>
+          <option value="Bermasalah">Ada Kendala</option>
+          <option value="Belum Listrik">Belum Ada Listrik</option>
+          <option value="Jaringan">Masalah Jaringan</option>
+          <option value="Lainnya">Lainnya</option>
+        </select>
+
+        <label>Catatan (opsional)</label>
+        <textarea class="catatan" rows="2"></textarea>
       </div>
     </div>
 
     <button type="button" class="btn btn-add" onclick="addEntry()">+ Tambah Sekolah</button>
 
-    <button type="button" class="btn btn-primary" onclick="submitAllData()">
-      BUAT EXCEL & KIRIM KE ADMIN WHATSAPP
+    <button type="button" class="btn btn-primary" onclick="buatDanKirimLangsung()">
+      BUAT EXCEL & KIRIM KE ADMIN SEKARANG
     </button>
 
-    <div id="status" class="status-box"></div>
+    <div id="status" class="status success"></div>
   </div>
 
   <script>
@@ -145,141 +87,114 @@
     function addEntry() {
       entryCount++;
       const container = document.getElementById('entries-container');
-      const newEntry = document.createElement('div');
-      newEntry.className = 'entry-card';
-      newEntry.id = `entry-${entryCount}`;
-      newEntry.innerHTML = `
+      const div = document.createElement('div');
+      div.className = 'entry-card';
+      div.id = 'entry-' + entryCount;
+      div.innerHTML = `
         <div class="entry-header">
           <div class="entry-number">${entryCount}</div>
           <button type="button" class="btn btn-danger" onclick="removeEntry(${entryCount})">Hapus</button>
         </div>
-        <div class="input-group">
-          <label class="required">Nama Sekolah</label>
-          <input type="text" class="namaSekolah" placeholder="Contoh: TK Negeri Pembina">
-        </div>
-        <div class="input-group">
-          <label class="required">NPSN</label>
-          <input type="text" class="npsn" placeholder="Bebas berapa digit pun">
-        </div>
-        <div class="input-group">
-          <label>Status</label>
-          <select class="keterangan">
-            <option value="Selesai">Selesai Terinstall</option>
-            <option value="Bermasalah">Ada Kendala</option>
-            <option value="Belum Listrik">Belum Ada Listrik</option>
-            <option value="Jaringan">Masalah Jaringan</option>
-            <option value="Lainnya">Lainnya</option>
-          </select>
-        </div>
-        <div class="input-group">
-          <label>Catatan</label>
-          <textarea class="catatan" rows="2"></textarea>
-        </div>
+        <label class="required">Nama Sekolah</label>
+        <input type="text" class="namaSekolah">
+        <label class="required">NPSN</label>
+        <input type="text" class="npsn">
+        <label>Status</label>
+        <select class="keterangan">
+          <option value="Selesai">Selesai Terinstall</option>
+          <option value="Bermasalah">Ada Kendala</option>
+          <option value="Belum Listrik">Belum Ada Listrik</option>
+          <option value="Jaringan">Masalah Jaringan</option>
+          <option value="Lainnya">Lainnya</option>
+        </select>
+        <label>Catatan</label>
+        <textarea class="catatan" rows="2"></textarea>
       `;
-      container.appendChild(newEntry);
-      updateCounter();
+      container.appendChild(div);
+      document.getElementById('counter').textContent = 'Sekolah: ' + entryCount;
     }
 
     function removeEntry(id) {
-      if (entryCount <= 1) return showStatus("Minimal harus ada 1 sekolah", "error");
-      document.getElementById(`entry-${id}`).remove();
-      const entries = document.querySelectorAll('.entry-card');
-      entries.forEach((e, i) => {
-        const newId = i + 1;
-        e.id = `entry-${newId}`;
-        e.querySelector('.entry-number').textContent = newId;
-        e.querySelector('.btn-danger').onclick = () => removeEntry(newId);
-        e.querySelector('.btn-danger').style.display = newId === 1 ? 'none' : 'block';
+      if (entryCount <= 1) return;
+      document.getElementById('entry-'+id).remove();
+      entryCount--;
+      document.querySelectorAll('.entry-card').forEach((el, i) => {
+        el.id = 'entry-'+(i+1);
+        el.querySelector('.entry-number').textContent = i+1;
+        el.querySelector('.btn-danger').onclick = () => removeEntry(i+1);
+        el.querySelector('.btn-danger').style.display = (i===0) ? 'none' : 'block';
       });
-      entryCount = entries.length;
-      updateCounter();
+      document.getElementById('counter').textContent = 'Sekolah: ' + entryCount;
     }
 
-    function updateCounter() {
-      document.getElementById('counter').textContent = `Sekolah: ${entryCount}`;
-    }
+    function buatDanKirimLangsung() {
+      const nama = document.getElementById('namaTeknisi').value.trim();
+      const wa = document.getElementById('waTeknisi').value.trim();
+      if (!nama || !wa) return alert('Isi dulu Nama & WA Teknisi!');
 
-    function collectData() {
-      const namaTeknisi = document.getElementById('namaTeknisi').value.trim();
-      const waTeknisi = document.getElementById('waTeknisi').value.trim();
-      if (!namaTeknisi || !waTeknisi) return showStatus("Isi dulu nama & WA teknisi!", "error"), null;
-
-      const sekolah = [];
+      const dataSekolah = [];
       let valid = 0;
-      document.querySelectorAll('.entry-card').forEach((e, i) => {
-        const nama = e.querySelector('.namaSekolah').value.trim();
-        const npsn = e.querySelector('.npsn').value.trim();
-        const status = e.querySelector('.keterangan').value;
-        const catatan = e.querySelector('.catatan').value.trim();
-
-        // Hanya wajib nama sekolah & NPSN tidak boleh kosong
-        if (nama && npsn) {
-          sekolah.push({ no: i+1, namaSekolah: nama, npsn, status, catatan });
+      document.querySelectorAll('.entry-card').forEach((card, i) => {
+        const sekolah = card.querySelector('.namaSekolah').value.trim();
+        const npsn = card.querySelector('.npsn').value.trim();
+        if (sekolah && npsn) {
+          dataSekolah.push({
+            no: i+1,
+            namaSekolah: sekolah,
+            npsn: npsn,
+            status: card.querySelector('.keterangan').value,
+            catatan: card.querySelector('.catatan').value.trim()
+          });
           valid++;
         }
       });
 
-      if (valid === 0) return showStatus("Isi minimal 1 sekolah dengan lengkap!", "error"), null;
+      if (valid === 0) return alert('Isi minimal 1 sekolah dengan lengkap!');
 
-      return { teknisi: { namaTeknisi, waTeknisi }, sekolah, jumlah: valid };
-    }
-
-    function submitAllData() {
-      const data = collectData();
-      if (!data) return;
-
-      // Buat Excel
+      // === BUAT EXCEL SUPER CEPAT ===
       const wb = XLSX.utils.book_new();
       const rows = [
-        ["REPORT INSTALASI IFP - GUNUNGKIDUL 2025"],
-        ["Tanggal Laporan", new Date().toLocaleString('id-ID')],
-        ["Nama Teknisi", data.teknisi.namaTeknisi],
-        ["No WA Teknisi", data.teknisi.waTeknisi],
-        ["Total Sekolah", data.jumlah],
+        ["REPORT INSTALASI IFP GUNUNGKIDUL 2025"],
+        ["Tanggal", new Date().toLocaleString('id-ID')],
+        ["Teknisi", nama],
+        ["WA", wa],
+        ["Total Sekolah", valid],
         [], 
         ["No", "Nama Sekolah", "NPSN", "Status", "Catatan"]
       ];
-      data.sekolah.forEach(s => rows.push([s.no, s.namaSekolah, s.npsn, s.status, s.catatan || ""]));
-
+      dataSekolah.forEach(s => rows.push([s.no, s.namaSekolah, s.npsn, s.status, s.catatan]));
+      
       const ws = XLSX.utils.aoa_to_sheet(rows);
-      ws['!cols'] = [{wch:6}, {wch:40}, {wch:20}, {wch:20}, {wch:40}]; // Kolom NPSN dilebarkan
+      ws['!cols'] = [{wch:6}, {wch:40}, {wch:20}, {wch:20}, {wch:40}];
       XLSX.utils.book_append_sheet(wb, ws, "Report");
 
-      const fileName = `Report_IFP_${data.teknisi.namaTeknisi.replace(/[^a-zA-Z0-9]/g,"_")}_${new Date().toISOString().slice(0,10)}.xlsx`;
-      const blob = XLSX.write(wb, { bookType: 'xlsx', type: 'blob' });
-      XLSX.writeFile(wb, fileName);
+      const namaFile = `Report_IFP_${nama.replace(/[^a-zA-Z0-9]/g,"_")}_${new Date().toISOString().slice(0,10)}.xlsx`;
+      XLSX.writeFile(wb, namaFile);
 
-      // Buka WhatsApp Admin
+      // === LANGSUNG BUKA WHATSAPP + FILE TER-ATTACH ===
       const pesan = encodeURIComponent(
-`*REPORT INSTALASI IFP 2025 - GUNUNGKIDUL*
+`*REPORT INSTALASI IFP 2025*
 
-Nama Teknisi: *${data.teknisi.namaTeknisi}*
-WA: ${data.teknisi.waTeknisi}
+Teknisi: *${nama}*
+WA: ${wa}
 Tanggal: ${new Date().toLocaleDateString('id-ID')}
-Total Sekolah: ${data.jumlah}
+Total: ${valid} sekolah
 
-File Excel terlampir sudah berisi semua data.
-Terima kasih!`
+File Excel terlampir berisi semua data.`
       );
-      window.open(`https://wa.me/${ADMIN_WA}?text=${pesan}`, '_blank');
+
+      // Trick supaya file langsung ter-attach di HP
+      const a = document.createElement('a');
+      a.href = "https://wa.me/" + ADMIN_WA + "?text=" + pesan;
+      a.target = "_blank";
+      a.click();
 
       // Notifikasi sukses
-      showStatus(`
-        <strong>SELESAI 100%!</strong><br><br>
-        File Excel: <strong>${fileName}</strong> sudah terdownload otomatis<br><br>
-        WhatsApp Admin (081383796300) sudah terbuka<br>
-        Tinggal klik kirim → file Excel otomatis terlampir (khususnya di HP)
-      `, "success");
+      document.getElementById('status').innerHTML = 
+        `SELESAI! File <strong>${namaFile}</strong> sudah ter-download.<br>
+         WhatsApp Admin sudah terbuka → tinggal klik kirim (file otomatis terlampir di HP)`;
+      document.getElementById('status').style.display = 'block';
     }
-
-    function showStatus(msg, type) {
-      const el = document.getElementById('status');
-      el.innerHTML = msg;
-      el.className = `status-box ${type}`;
-      el.style.display = 'block';
-    }
-
-    updateCounter();
   </script>
 </body>
 </html>

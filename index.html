@@ -3,198 +3,193 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>REPORT INSTALASI IFP 2025 - GUNUNGKIDUL</title>
+  <title>REPORT IFP 2025 GUNUNGKIDUL</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
-    * { box-sizing: border-box; margin:0; padding:0; }
-    body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #667eea, #764ba2); padding: 15px; min-height: 100vh; }
-    .container { max-width: 800px; margin: 0 auto; background: white; border-radius: 20px; padding: 25px; box-shadow: 0 15px 40px rgba(0,0,0,0.3); }
-    h1 { font-size: 24px; text-align: center; background: linear-gradient(45deg, #1a237e, #4a148c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .badge { display: inline-block; background: #4caf50; color: white; padding: 6px 16px; border-radius: 30px; font-size: 14px; }
-    label { display: block; margin: 15px 0 6px; font-weight: bold; color: #333; }
-    .required::after { content: " *"; color: red; }
-    input, select, textarea { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 10px; font-size: 16px; }
-    .entry-card { background: #f8faff; border: 2px dashed #bbdefb; border-radius: 15px; padding: 18px; margin-bottom: 20px; }
-    .entry-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .entry-number { background: #5c6bc0; color: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
-    .btn { padding: 14px; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; width: 100%; margin: 10px 0; }
-    .btn-add { background: #29b6f6; color: white; }
-    .btn-primary { background: linear-gradient(45deg, #43a047, #2e7d32); color: white; font-size: 18px; }
-    .btn-danger { background: #f44336; color: white; }
-    .counter { position: fixed; top: 15px; right: 15px; background: white; padding: 10px 20px; border-radius: 50px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); font-weight: bold; color: #5c6bc0; z-index: 100; }
-    .status { margin-top: 20px; padding: 15px; border-radius: 10px; text-align: center; font-weight: bold; display: none; }
-    .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    body{font-family:Arial,sans-serif;background:#667eea;padding:15px;margin:0;min-height:100vh}
+    .container{max-width:800px;margin:0 auto;background:#fff;border-radius:20px;padding:25px;box-shadow:0 15px 40px rgba(0,0,0,0.3)}
+    h1{text-align:center;font-size:24px;background:linear-gradient(45deg,#1a237e,#4a148c);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .badge{background:#4caf50;color:#fff;padding:6px 16px;border-radius:30px;font-size:14px}
+    label{display:block;margin:15px 0 6px;font-weight:bold;color:#333}
+    .required::after{content:" *";color:red}
+    input,select,textarea{width:100%;padding:14px;border:2px solid #ddd;border-radius:12px;font-size:16px;margin-bottom:10px}
+    .card{background:#f8faff;border:2px dashed #bbdefb;border-radius:15px;padding:20px;margin:20px 0}
+    .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
+    .no{background:#5c6bc0;color:#fff;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold}
+    .btn{padding:16px;border:none;border-radius:12px;font-size:18px;font-weight:bold;cursor:pointer;width:100%;margin:10px 0;color:#fff}
+    .btn-add{background:#29b6f6}
+    .btn-kirim{background:#43a047;background:linear-gradient(45deg,#43a047,#2e7d32)}
+    .btn-hapus{background:#f44336}
+    .status{margin-top:20px;padding:20px;background:#d4edda;color:#155724;border-radius:12px;text-align:center;font-weight:bold;display:none}
+    .counter{position:fixed;top:15px;right:15px;background:#fff;padding:12px 24px;border-radius:50px;box-shadow:0 5px 20px rgba(0,0,0,0.2);font-weight:bold;color:#5c6bc0;z-index:999}
   </style>
 </head>
 <body>
 
-  <div class="counter" id="counter">Sekolah: 1</div>
+<div class="counter" id="counter">Sekolah: 1</div>
 
-  <div class="container">
-    <h1>REPORT INSTALASI IFP 2025</h1>
-    <div style="text-align:center;margin:10px 0;">
-      <span class="badge">GUNUNGKIDUL</span>
-    </div>
-    <p style="text-align:center;color:#555;">NPSN bebas berapa digit • Langsung jadi Excel • Otomatis kirim ke Admin</p>
+<div class="container">
+  <h1>REPORT INSTALASI IFP 2025</h1>
+  <center><span class="badge">KABUPATEN GUNUNGKIDUL</span></center>
+  <p style="text-align:center;color:#555;margin:15px 0">NPSN bebas berapa digit • Klik sekali → Excel langsung download → Kirim ke Admin</p>
 
-    <h2>DATA TEKNISI</h2>
-    <label class="required">Nama Teknisi</label>
-    <input type="text" id="namaTeknisi" placeholder="Nama lengkap">
+  <b>DATA TEKNISI</b>
+  <label class="required">Nama Teknisi</label>
+  <input type="text" id="namaTeknisi" placeholder="Masukkan nama lengkap">
 
-    <label class="required">No WhatsApp</label>
-    <input type="text" id="waTeknisi" placeholder="08xxxxxxxxxx">
+  <label class="required">No WhatsApp</label>
+  <input type="text" id="waTeknisi" placeholder="08xxxxxxxxxx">
 
-    <h2 style="margin-top:30px;">DAFTAR SEKOLAH</h2>
-    <div id="entries-container">
-      <div class="entry-card" id="entry-1">
-        <div class="entry-header">
-          <div class="entry-number">1</div>
-          <button type="button" class="btn btn-danger" onclick="removeEntry(1)" style="display:none;">Hapus</button>
-        </div>
-        <label class="required">Nama Sekolah</label>
-        <input type="text" class="namaSekolah" placeholder="Contoh: SMPN 1 Wonosari">
-
-        <label class="required">NPSN (bebas digit)</label>
-        <input type="text" class="npsn" placeholder="12345678 atau 1234567890123456">
-
-        <label>Status</label>
-        <select class="keterangan">
-          <option value="Selesai">Selesai Terinstall</option>
-          <option value="Bermasalah">Ada Kendala</option>
-          <option value="Belum Listrik">Belum Ada Listrik</option>
-          <option value="Jaringan">Masalah Jaringan</option>
-          <option value="Lainnya">Lainnya</option>
-        </select>
-
-        <label>Catatan (opsional)</label>
-        <textarea class="catatan" rows="2"></textarea>
+  <b style="display:block;margin:30px 0 10px">DAFTAR SEKOLAH</b>
+  <div id="sekolahList">
+    <div class="card" id="sekolah-1">
+      <div class="header">
+        <div class="no">1</div>
+        <button type="button" class="btn btn-hapus" onclick="hapusSekolah(1)" style="display:none;width:auto;padding:8px 16px;font-size:14px">Hapus</button>
       </div>
+      <label class="required">Nama Sekolah</label>
+      <input type="text" class="nama" placeholder="Contoh: SMPN 1 Wonosari">
+
+      <label class="required">NPSN</label>
+      <input type="text" class="npsn" placeholder="Bebas berapa digit (8 atau 16)">
+
+      <label>Status</label>
+      <select class="status">
+        <option value="Selesai">Selesai Terinstall</option>
+        <option value="Bermasalah">Ada Kendala</option>
+        <option value="Belum Listrik">Belum Ada Listrik</option>
+        <option value="Jaringan">Masalah Jaringan</option>
+        <option value="Lainnya">Lainnya</option>
+      </select>
+
+      <label>Catatan (opsional)</label>
+      <textarea class="catatan" rows="2"></textarea>
     </div>
-
-    <button type="button" class="btn btn-add" onclick="addEntry()">+ Tambah Sekolah</button>
-
-    <button type="button" class="btn btn-primary" onclick="buatDanKirimLangsung()">
-      BUAT EXCEL & KIRIM KE ADMIN SEKARANG
-    </button>
-
-    <div id="status" class="status success"></div>
   </div>
 
-  <script>
-    const ADMIN_WA = "6281383796300"; // Nomor WA Admin
-    let entryCount = 1;
+  <button type="button" class="btn btn-add" onclick="tambahSekolah()">+ Tambah Sekolah</button>
 
-    function addEntry() {
-      entryCount++;
-      const container = document.getElementById('entries-container');
-      const div = document.createElement('div');
-      div.className = 'entry-card';
-      div.id = 'entry-' + entryCount;
-      div.innerHTML = `
-        <div class="entry-header">
-          <div class="entry-number">${entryCount}</div>
-          <button type="button" class="btn btn-danger" onclick="removeEntry(${entryCount})">Hapus</button>
-        </div>
-        <label class="required">Nama Sekolah</label>
-        <input type="text" class="namaSekolah">
-        <label class="required">NPSN</label>
-        <input type="text" class="npsn">
-        <label>Status</label>
-        <select class="keterangan">
-          <option value="Selesai">Selesai Terinstall</option>
-          <option value="Bermasalah">Ada Kendala</option>
-          <option value="Belum Listrik">Belum Ada Listrik</option>
-          <option value="Jaringan">Masalah Jaringan</option>
-          <option value="Lainnya">Lainnya</option>
-        </select>
-        <label>Catatan</label>
-        <textarea class="catatan" rows="2"></textarea>
-      `;
-      container.appendChild(div);
-      document.getElementById('counter').textContent = 'Sekolah: ' + entryCount;
-    }
+  <button type="button" class="btn btn-kirim" onclick="downloadDanKirimKeAdmin()">
+    DOWNLOAD EXCEL & KIRIM KE ADMIN SEKARANG
+  </button>
 
-    function removeEntry(id) {
-      if (entryCount <= 1) return;
-      document.getElementById('entry-'+id).remove();
-      entryCount--;
-      document.querySelectorAll('.entry-card').forEach((el, i) => {
-        el.id = 'entry-'+(i+1);
-        el.querySelector('.entry-number').textContent = i+1;
-        el.querySelector('.btn-danger').onclick = () => removeEntry(i+1);
-        el.querySelector('.btn-danger').style.display = (i===0) ? 'none' : 'block';
-      });
-      document.getElementById('counter').textContent = 'Sekolah: ' + entryCount;
-    }
+  <div id="status" class="status"></div>
+</div>
 
-    function buatDanKirimLangsung() {
-      const nama = document.getElementById('namaTeknisi').value.trim();
-      const wa = document.getElementById('waTeknisi').value.trim();
-      if (!nama || !wa) return alert('Isi dulu Nama & WA Teknisi!');
+<script>
+  const ADMIN = "6281383796300"; // Nomor WA kamu
+  let jumlahSekolah = 1;
 
-      const dataSekolah = [];
-      let valid = 0;
-      document.querySelectorAll('.entry-card').forEach((card, i) => {
-        const sekolah = card.querySelector('.namaSekolah').value.trim();
-        const npsn = card.querySelector('.npsn').value.trim();
-        if (sekolah && npsn) {
-          dataSekolah.push({
-            no: i+1,
-            namaSekolah: sekolah,
-            npsn: npsn,
-            status: card.querySelector('.keterangan').value,
-            catatan: card.querySelector('.catatan').value.trim()
-          });
-          valid++;
-        }
-      });
+  function tambahSekolah() {
+    jumlahSekolah++;
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.id = 'sekolah-' + jumlahSekolah;
+    div.innerHTML = `
+      <div class="header">
+        <div class="no">${jumlahSekolah}</div>
+        <button type="button" class="btn btn-hapus" onclick="hapusSekolah(${jumlahSekolah})" style="width:auto;padding:8px 16px;font-size:14px">Hapus</button>
+      </div>
+      <label class="required">Nama Sekolah</label>
+      <input type="text" class="nama">
+      <label class="required">NPSN</label>
+      <input type="text" class="npsn">
+      <label>Status</label>
+      <select class="status">
+        <option value="Selesai">Selesai Terinstall</option>
+        <option value="Bermasalah">Ada Kendala</option>
+        <option value="Belum Listrik">Belum Ada Listrik</option>
+        <option value="Jaringan">Masalah Jaringan</option>
+        <option value="Lainnya">Lainnya</option>
+      </select>
+      <label>Catatan</label>
+      <textarea class="catatan" rows="2"></textarea>
+    `;
+    document.getElementById('sekolahList').appendChild(div);
+    document.getElementById('counter').textContent = 'Sekolah: ' + jumlahSekolah;
+  }
 
-      if (valid === 0) return alert('Isi minimal 1 sekolah dengan lengkap!');
+  function hapusSekolah(id) {
+    if (jumlahSekolah <= 1) return;
+    document.getElementById('sekolah-'+id).remove();
+    jumlahSekolah--;
+    document.querySelectorAll('.card').forEach((c,i) => {
+      c.id = 'sekolah-'+(i+1);
+      c.querySelector('.no').textContent = i+1;
+      c.querySelector('.btn-hapus').onclick = () => hapusSekolah(i+1);
+      c.querySelector('.btn-hapus').style.display = (i===0) ? 'none' : 'block';
+    });
+    document.getElementById('counter').textContent = 'Sekolah: ' + jumlahSekolah;
+  }
 
-      // === BUAT EXCEL SUPER CEPAT ===
-      const wb = XLSX.utils.book_new();
-      const rows = [
-        ["REPORT INSTALASI IFP GUNUNGKIDUL 2025"],
-        ["Tanggal", new Date().toLocaleString('id-ID')],
-        ["Teknisi", nama],
-        ["WA", wa],
-        ["Total Sekolah", valid],
-        [], 
-        ["No", "Nama Sekolah", "NPSN", "Status", "Catatan"]
-      ];
-      dataSekolah.forEach(s => rows.push([s.no, s.namaSekolah, s.npsn, s.status, s.catatan]));
-      
-      const ws = XLSX.utils.aoa_to_sheet(rows);
-      ws['!cols'] = [{wch:6}, {wch:40}, {wch:20}, {wch:20}, {wch:40}];
-      XLSX.utils.book_append_sheet(wb, ws, "Report");
+  function downloadDanKirimKeAdmin() {
+    const nama = document.getElementById('namaTeknisi').value.trim();
+    const wa = document.getElementById('waTeknisi').value.trim();
+    if (!nama || !wa) return alert("Isi dulu Nama & WA Teknisi!");
 
-      const namaFile = `Report_IFP_${nama.replace(/[^a-zA-Z0-9]/g,"_")}_${new Date().toISOString().slice(0,10)}.xlsx`;
-      XLSX.writeFile(wb, namaFile);
+    const data = [];
+    let valid = 0;
+    document.querySelectorAll('.card').forEach((card, i) => {
+      const sekolah = card.querySelector('.nama').value.trim();
+      const npsn = card.querySelector('.npsn').value.trim();
+      if (sekolah && npsn) {
+        data.push({
+          no: i+1,
+          sekolah: sekolah,
+          npsn: npsn,
+          status: card.querySelector('.status').value,
+          catatan: card.querySelector('.catatan').value.trim()
+        });
+        valid++;
+      }
+    });
 
-      // === LANGSUNG BUKA WHATSAPP + FILE TER-ATTACH ===
-      const pesan = encodeURIComponent(
-`*REPORT INSTALASI IFP 2025*
+    if (valid === 0) return alert("Isi minimal 1 sekolah dengan lengkap!");
+
+    // 1. BUAT & DOWNLOAD EXCEL DULU
+    const wb = XLSX.utils.book_new();
+    const rows = [
+      ["REPORT INSTALASI IFP GUNUNGKIDUL 2025"],
+      ["Tanggal", new Date().toLocaleString('id-ID')],
+      ["Teknisi", nama],
+      ["WA Teknisi", wa],
+      ["Total Sekolah", valid],
+      [],["No","Nama Sekolah","NPSN","Status","Catatan"]
+    ];
+    data.forEach(d => rows.push([d.no, d.sekolah, d.npsn, d.status, d.catatan]));
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    ws['!cols'] = [{wch:6},{wch:40},{wch:22},{wch:20},{wch:40}];
+    XLSX.utils.book_append_sheet(wb, ws, "Report");
+    
+    const namaFile = `Report_IFP_${nama.replace(/[^a-zA-Z0-9]/g,"_")}_${new Date().toISOString().slice(0,10)}.xlsx`;
+    XLSX.writeFile(wb, namaFile);
+
+    // 2. LANGSUNG BUKA WA ADMIN + PESAN SIAP
+    const pesan = encodeURIComponent(
+`*REPORT INSTALASI IFP 2025 - GUNUNGKIDUL*
 
 Teknisi: *${nama}*
 WA: ${wa}
 Tanggal: ${new Date().toLocaleDateString('id-ID')}
 Total: ${valid} sekolah
 
-File Excel terlampir berisi semua data.`
-      );
+File Excel sudah ter-download di HP Anda.
+Silakan lampirkan file "${namaFile}" ini dan kirim. Terima kasih!`
+    );
 
-      // Trick supaya file langsung ter-attach di HP
-      const a = document.createElement('a');
-      a.href = "https://wa.me/" + ADMIN_WA + "?text=" + pesan;
-      a.target = "_blank";
-      a.click();
+    setTimeout(() => {
+      window.location.href = "https://wa.me/" + ADMIN + "?text=" + pesan;
+    }, 1000);
 
-      // Notifikasi sukses
-      document.getElementById('status').innerHTML = 
-        `SELESAI! File <strong>${namaFile}</strong> sudah ter-download.<br>
-         WhatsApp Admin sudah terbuka → tinggal klik kirim (file otomatis terlampir di HP)`;
-      document.getElementById('status').style.display = 'block';
-    }
-  </script>
+    // 3. TAMPILKAN STATUS SUKSES
+    document.getElementById('status').innerHTML = `
+      <strong>SELESAI!</strong><br><br>
+      File Excel <b>${namaFile}</b> sudah ter-download otomatis<br><br>
+      WhatsApp Admin sedang dibuka...<br>
+      Tinggal pilih file yang baru di-download → klik kirim
+    `;
+    document.getElementById('status').style.display = 'block';
+  }
+</script>
 </body>
 </html>

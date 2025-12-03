@@ -3,150 +3,286 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Report Instalasi IFP - Gunungkidul</title>
+  <title>REPORT INSTALASI IFP - GUNUNGKIDUL 2025</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
   <style>
-    body {font-family: Arial, sans-serif; background: #f0f9ff; margin:0; padding:20px;}
-    .container {max-width: 700px; margin:auto; background:white; padding:30px; border-radius:15px; box-shadow:0 10px 30px rgba(0,0,0,0.1);}
-    h1 {text-align:center; color:#1e40af;}
-    label {display:block; margin:15px 0 8px; font-weight:bold; color:#1f2937;}
-    input, textarea {width:100%; padding:12px; border:1px solid #ccc; border-radius:8px; font-size:16px; box-sizing:border-box;}
-    button {background:#059669; color:white; padding:14px 30px; border:none; border-radius:8px; font-size:18px; cursor:pointer; width:100%; margin-top:20px;}
-    button:hover {background:#047857;}
-    .status {margin-top:20px; padding:15px; border-radius:8px; text-align:center; font-weight:bold;}
-    .success {background:#d1fae5; color:#065f46;}
-    .error {background:#fee2e2; color:#991b1b;}
-    .loading {background:#dbeafe; color:#1e40af;}
-    .info {background:#fef3c7; color:#92400e; border:1px solid #f59e0b;}
+    * { box-sizing: border-box; margin:0; padding:0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 20px; min-height: 100vh;
+    }
+    .container {
+      max-width: 800px; margin: 0 auto;
+      background: white; border-radius: 20px;
+      padding: 25px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .header { text-align: center; padding-bottom: 20px; border-bottom: 3px solid #eee; margin-bottom: 25px; }
+    h1 {
+      font-size: 24px; margin:0;
+      background: linear-gradient(45deg, #1a237e, #4a148c);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    h2 { color: #5d4037; font-size: 18px; margin: 25px 0 15px; padding-bottom: 8px; border-bottom: 2px solid #ff9800; }
+    .badge { background: #4caf50; color: white; padding: 6px 16px; border-radius: 30px; font-size: 14px; display: inline-block; }
+    label { display: block; margin: 15px 0 8px; font-weight: 600; color: #37474f; }
+    .required::after { content: " *"; color: #f44336; }
+    input, textarea, select {
+      width: 100%; padding: 14px; border: 2px solid #e0e0e0; border-radius: 12px;
+      font-size: 16px; background: #fafafa; transition: all 0.3s;
+    }
+    input:focus, textarea:focus, select:focus {
+      outline: none; border-color: #5c6bc0; background: white;
+      box-shadow: 0 0 0 3px rgba(92,107,192,0.1);
+    }
+    .entry-card {
+      background: #f5f7ff; border: 2px dashed #bbdefb; border-radius: 15px;
+      padding: 20px; margin-bottom: 20px; transition: all 0.3s;
+    }
+    .entry-card:hover { border-color: #7986cb; }
+    .entry-header {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;
+    }
+    .entry-number {
+      background: #5c6bc0; color: white; width: 36px; height: 36px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px;
+    }
+    .btn {
+      padding: 14px 24px; border: none; border-radius: 12px; font-size: 16px; font-weight: 600;
+      cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      transition: all 0.3s; margin: 10px 0;
+    }
+    .btn-add { background: #29b6f6; color: white; width: 100%; }
+    .btn-primary { background: linear-gradient(45deg, #43a047, #2e7d32); color: white; width: 100%; font-size: 18px; }
+    .btn-danger { background: #ef5350; color: white; }
+    .btn:hover { opacity: 0.9; transform: translateY(-2px); }
+    .counter {
+      position: fixed; top: 20px; right: 20px; background: white; padding: 12px 24px;
+      border-radius: 50px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); font-weight: bold; color: #5c6bc0; z-index: 1000;
+    }
+    .status-box {
+      margin-top: 25px; padding: 20px; border-radius: 12px; text-align: center;
+      font-weight: 600; display: none; font-size: 16px;
+    }
+    .success { background: #e8f5e9; color: #2e7d32; border: 2px solid #4caf50; }
+    .error   { background: #ffebee; color: #c62828; border: 2px solid #ef5350; }
+    @media (max-width: 600px) {
+      .container { padding: 15px; margin: 10px; border-radius: 15px; }
+      .counter { position: static; margin: 15px auto; width: fit-content; }
+    }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <h1>REPORT INSTALASI IFP<br><small>Kabupaten Gunungkidul 2025</small></h1>
-  
-  <div class="info status" style="display:block; margin-bottom:20px;">
-    📱 Form ini bisa diisi offline. Data akan terkirim otomatis saat ada sinyal internet.<br>
-    Semua data masuk ke 1 spreadsheet pusat untuk koordinator.
+  <div class="counter" id="counter">Sekolah: 1</div>
+
+  <div class="container">
+    <div class="header">
+      <h1>REPORT INSTALASI IFP 2025</h1>
+      <div class="badge">KABUPATEN GUNUNGKIDUL</div>
+      <p style="color:#666;margin-top:12px;">Isi sekali → tambah sekolah sebanyak yang sudah diinstall → langsung jadi Excel + kirim ke Admin</p>
+    </div>
+
+    <!-- DATA TEKNISI -->
+    <h2>DATA TEKNISI</h2>
+    <div class="input-group">
+      <label class="required">Nama Teknisi</label>
+      <input type="text" id="namaTeknisi" placeholder="Nama lengkap teknisi">
+    </div>
+    <div class="input-group">
+      <label class="required">No WhatsApp</label>
+      <input type="tel" id="waTeknisi" placeholder="08xxxxxxxxxx">
+    </div>
+
+    <!-- DAFTAR SEKOLAH -->
+    <h2>DAFTAR SEKOLAH YANG SUDAH DIINSTALL</h2>
+    <div id="entries-container">
+      <div class="entry-card" id="entry-1">
+        <div class="entry-header">
+          <div class="entry-number">1</div>
+          <button type="button" class="btn btn-danger" onclick="removeEntry(1)" style="display:none;">Hapus</button>
+        </div>
+        <div class="input-group">
+          <label class="required">Nama Sekolah</label>
+          <input type="text" class="namaSekolah" placeholder="Contoh: SMPN 1 Wonosari">
+        </div>
+        <div class="input-group">
+          <label class="required">NPSN (8 digit)</label>
+          <input type="text" class="npsn" placeholder="12345678" maxlength="8">
+        </div>
+        <div class="input-group">
+          <label>Status</label>
+          <select class="keterangan">
+            <option value="Selesai">Selesai Terinstall</option>
+            <option value="Bermasalah">Ada Kendala</option>
+            <option value="Belum Listrik">Belum Ada Listrik</option>
+            <option value="Jaringan">Masalah Jaringan</option>
+            <option value="Lainnya">Lainnya</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label>Catatan (jika ada)</label>
+          <textarea class="catatan" rows="2" placeholder="Tulis kendala atau keterangan tambahan..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <button type="button" class="btn btn-add" onclick="addEntry()">+ Tambah Sekolah</button>
+
+    <button type="button" class="btn btn-primary" onclick="submitAllData()">
+      BUAT EXCEL & KIRIM KE ADMIN WHATSAPP
+    </button>
+
+    <div id="status" class="status-box"></div>
   </div>
 
-  <label>Nama Teknisi *</label>
-  <input type="text" id="namaTeknisi" placeholder="Nama lengkap teknisi" required>
+  <script>
+    const ADMIN_WA = "6281383796300"; // Nomor WA Admin kamu
+    let entryCount = 1;
 
-  <label>Nama Sekolah (Alokasi yang di-install) *</label>
-  <input type="text" id="namaSekolah" placeholder="Contoh: SMPN 1 Wonosari" required>
-
-  <label>No NPSN *</label>
-  <input type="text" id="npsn" placeholder="8 digit NPSN" maxlength="8" required>
-
-  <label>No WhatsApp Teknisi *</label>
-  <input type="tel" id="waTeknisi" placeholder="08xxxxxxxxxx" required>
-
-  <label>Keterangan (opsional)</label>
-  <textarea id="keterangan" rows="3" placeholder="Status: Selesai / Belum listrik / Masalah jaringan / dll. Bisa tambah catatan"></textarea>
-
-  <button onclick="kirimData()">📤 KIRIM REPORT</button>
-
-  <div id="status" class="status" style="display:none;"></div>
-</div>
-
-<script>
-  // GANTI DENGAN URL WEB APP DARI APPS SCRIPT KAMU
-  const WEB_APP_URL = "[PASTE_WEB_APP_URL_KAMU_DISINI]"; // Contoh: https://script.google.com/macros/s/AKfycb.../exec
-
-  function kirimData() {
-    const data = {
-      namaTeknisi: document.getElementById("namaTeknisi").value.trim(),
-      namaSekolah: document.getElementById("namaSekolah").value.trim(),
-      npsn: document.getElementById("npsn").value.trim(),
-      waTeknisi: document.getElementById("waTeknisi").value.trim(),
-      keterangan: document.getElementById("keterangan").value.trim()
-    };
-
-    // Validasi
-    if (!data.namaTeknisi || !data.namaSekolah || !data.npsn || !data.waTeknisi) {
-      showStatus("❌ Semua kolom wajib (*) harus diisi!", "error");
-      return;
+    function addEntry() {
+      entryCount++;
+      const container = document.getElementById('entries-container');
+      const newEntry = document.createElement('div');
+      newEntry.className = 'entry-card';
+      newEntry.id = `entry-${entryCount}`;
+      newEntry.innerHTML = `
+        <div class="entry-header">
+          <div class="entry-number">${entryCount}</div>
+          <button type="button" class="btn btn-danger" onclick="removeEntry(${entryCount})">Hapus</button>
+        </div>
+        <div class="input-group">
+          <label class="required">Nama Sekolah</label>
+          <input type="text" class="namaSekolah" placeholder="Contoh: SMPN 1 Wonosari">
+        </div>
+        <div class="input-group">
+          <label class="required">NPSN (8 digit)</label>
+          <input type="text" class="npsn" placeholder="12345678" maxlength="8">
+        </div>
+        <div class="input-group">
+          <label>Status</label>
+          <select class="keterangan">
+            <option value="Selesai">Selesai Terinstall</option>
+            <option value="Bermasalah">Ada Kendala</option>
+            <option value="Belum Listrik">Belum Ada Listrik</option>
+            <option value="Jaringan">Masalah Jaringan</option>
+            <option value="Lainnya">Lainnya</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label>Catatan (jika ada)</label>
+          <textarea class="catatan" rows="2"></textarea>
+        </div>
+      `;
+      container.appendChild(newEntry);
+      updateCounter();
     }
 
-    // Cek koneksi & kirim
-    if (!navigator.onLine) {
-      showStatus("⚠️ Offline? Data disimpan sementara & akan terkirim otomatis nanti.", "info");
-      // Simpan ke localStorage untuk retry
-      simpanLocal(data);
-      return;
-    }
-
-    showStatus("⏳ Sedang mengirim data...", "loading");
-
-    fetch(WEB_APP_URL, {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify(data),
-      mode: "cors"  // Ganti ke 'no-cors' kalau ada masalah CORS
-    })
-    .then(response => response.json())
-    .then(result => {
-      if (result.status === "success") {
-        showStatus("✅ Data berhasil dikirim! Terima kasih, teknisi. Form siap untuk sekolah berikutnya.", "success");
-        kosongkanForm();
-      } else {
-        throw new Error(result.message);
-      }
-    })
-    .catch(error => {
-      console.error(error);
-      simpanLocal(data);  // Simpan lokal kalau gagal
-      showStatus("⚠️ Dikirim tapi ada error. Data tersimpan lokal & retry nanti. Coba lagi?", "error");
-    });
-
-    // Auto-retry kalau offline
-    window.addEventListener('online', retryKirim);
-  }
-
-  function simpanLocal(data) {
-    let queue = JSON.parse(localStorage.getItem('ifp_queue') || '[]');
-    queue.push({...data, timestamp: Date.now()});
-    localStorage.setItem('ifp_queue', JSON.stringify(queue));
-  }
-
-  function retryKirim() {
-    let queue = JSON.parse(localStorage.getItem('ifp_queue') || '[]');
-    if (queue.length > 0) {
-      queue.forEach(item => {
-        fetch(WEB_APP_URL, {
-          method: "POST",
-          headers: {"Content-Type": "application/json"},
-          body: JSON.stringify(item)
-        }).then(() => {
-          // Hapus dari queue setelah sukses
-          queue = queue.filter(q => q.timestamp !== item.timestamp);
-          localStorage.setItem('ifp_queue', JSON.stringify(queue));
-        });
+    function removeEntry(id) {
+      if (entryCount <= 1) return showStatus("Minimal harus ada 1 sekolah", "error");
+      document.getElementById(`entry-${id}`).remove();
+      const entries = document.querySelectorAll('.entry-card');
+      entries.forEach((e, i) => {
+        const newId = i + 1;
+        e.id = `entry-${newId}`;
+        e.querySelector('.entry-number').textContent = newId;
+        e.querySelector('.btn-danger').onclick = () => removeEntry(newId);
+        e.querySelector('.btn-danger').style.display = newId === 1 ? 'none' : 'block';
       });
-      showStatus(`📤 Mengirim ${queue.length} data tertunda...`, "loading");
+      entryCount = entries.length;
+      updateCounter();
     }
-  }
 
-  function showStatus(msg, type) {
-    const el = document.getElementById("status");
-    el.innerHTML = msg;
-    el.className = `status ${type}`;
-    el.style.display = "block";
-    // Auto-hide success setelah 5 detik
-    if (type === "success") setTimeout(() => el.style.display = "none", 5000);
-  }
-
-  function kosongkanForm() {
-    document.querySelectorAll("input, textarea").forEach(el => el.value = "");
-  }
-
-  // Cek queue saat load
-  window.onload = () => {
-    if (navigator.onLine && localStorage.getItem('ifp_queue')) {
-      retryKirim();
+    function updateCounter() {
+      document.getElementById('counter').textContent = `Sekolah: ${entryCount}`;
     }
-  };
-</script>
 
+    function collectData() {
+      const namaTeknisi = document.getElementById('namaTeknisi').value.trim();
+      const waTeknisi = document.getElementById('waTeknisi').value.trim();
+      if (!namaTeknisi || !waTeknisi) return showStatus("Isi dulu nama & WA teknisi!", "error"), null;
+
+      const sekolah = [];
+      let valid = 0;
+      document.querySelectorAll('.entry-card').forEach((e, i) => {
+        const nama = e.querySelector('.namaSekolah').value.trim();
+        const npsn = e.querySelector('.npsn').value.trim();
+        const status = e.querySelector('.keterangan').value;
+        const catatan = e.querySelector('.catatan').value.trim();
+        if (nama && npsn.length === 8) {
+          sekolah.push({ no: i+1, namaSekolah: nama, npsn, status, catatan });
+          valid++;
+        }
+      });
+
+      if (valid === 0) return showStatus("Data sekolah tidak lengkap / NPSN harus 8 digit", "error"), null;
+
+      return { teknisi: { namaTeknisi, waTeknisi }, sekolah, jumlah: valid };
+    }
+
+    function generateAndSendExcel() {
+      const data = collectData();
+      if (!data) return;
+
+      // Buat Excel
+      const wb = XLSX.utils.book_new();
+      const rows = [
+        ["REPORT INSTALASI IFP - GUNUNGKIDUL 2025"],
+        ["Tanggal Laporan", new Date().toLocaleString('id-ID')],
+        ["Nama Teknisi", data.teknisi.namaTeknisi],
+        ["No WA Teknisi", data.teknisi.waTeknisi],
+        ["Total Sekolah", data.jumlah],
+        [], 
+        ["No", "Nama Sekolah", "NPSN", "Status", "Catatan"]
+      ];
+      data.sekolah.forEach(s => rows.push([s.no, s.namaSekolah, s.npsn, s.status, s.catatan]));
+
+      const ws = XLSX.utils.aoa_to_sheet(rows);
+      ws['!cols'] = [{wch:6}, {wch:40}, {wch:12}, {wch:20}, {wch:40}];
+      XLSX.utils.book_append_sheet(wb, ws, "Report");
+
+      const fileName = `Report_IFP_${data.teknisi.namaTeknisi.replace(/ /g,"_")}_${new Date().toISOString().slice(0,10)}.xlsx`;
+      const blob = XLSX.write(wb, { bookType: 'xlsx', type: 'blob' });
+      XLSX.writeFile(wb, fileName); // auto download
+
+      // Kirim ke Admin WA
+      const pesan = encodeURIComponent(
+`*REPORT INSTALASI IFP 2025*
+
+Nama Teknisi: *${data.teknisi.namaTeknisi}*
+WA: ${data.teknisi.waTeknisi}
+Tanggal: ${new Date().toLocaleDateString('id-ID')}
+Total Sekolah: ${data.jumlah}
+
+File Excel terlampir berisi detail lengkap semua sekolah.
+Terima kasih!`
+      );
+
+      window.open(`https://wa.me/${ADMIN_WA}?text=${pesan}`, '_blank');
+
+      // Notifikasi sukses
+      showStatus(`
+        <strong>SELESAI!</strong><br><br>
+        File Excel: <strong>${fileName}</strong> sudah terdownload<br><br>
+        WhatsApp Admin sudah terbuka → tinggal klik kirim (file otomatis terlampir di HP)
+      `, "success");
+    }
+
+    function showStatus(msg, type) {
+      const el = document.getElementById('status');
+      el.innerHTML = msg;
+      el.className = `status-box ${type}`;
+      el.style.display = 'block';
+    }
+
+    // Jalankan fungsi utama
+    function submitAllData() {
+      generateAndSendExcel();
+    }
+
+    // Init
+    updateCounter();
+  </script>
 </body>
 </html>

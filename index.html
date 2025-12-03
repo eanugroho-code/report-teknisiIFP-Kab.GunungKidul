@@ -63,7 +63,7 @@
     }
     .status-box {
       margin-top: 25px; padding: 20px; border-radius: 12px; text-align: center;
-      font-weight: 600; display: none; font-size: 16px;
+      font-weight: 600; display: none; font-size: 16px; line-height: 1.6;
     }
     .success { background: #e8f5e9; color: #2e7d32; border: 2px solid #4caf50; }
     .error   { background: #ffebee; color: #c62828; border: 2px solid #ef5350; }
@@ -81,7 +81,7 @@
     <div class="header">
       <h1>REPORT INSTALASI IFP 2025</h1>
       <div class="badge">KABUPATEN GUNUNGKIDUL</div>
-      <p style="color:#666;margin-top:12px;">Isi sekali → tambah sekolah sebanyak yang sudah diinstall → langsung jadi Excel + kirim ke Admin</p>
+      <p style="color:#666;margin-top:12px;">NPSN sekarang sekarang BEBAS berapa digit (bisa 8 / 16 digit)</p>
     </div>
 
     <!-- DATA TEKNISI -->
@@ -92,7 +92,7 @@
     </div>
     <div class="input-group">
       <label class="required">No WhatsApp</label>
-      <input type="tel" id="waTeknisi" placeholder="08xxxxxxxxxx">
+      <input type richtext="tel" id="waTeknisi" placeholder="08xxxxxxxxxx">
     </div>
 
     <!-- DAFTAR SEKOLAH -->
@@ -108,8 +108,9 @@
           <input type="text" class="namaSekolah" placeholder="Contoh: SMPN 1 Wonosari">
         </div>
         <div class="input-group">
-          <label class="required">NPSN (8 digit)</label>
-          <input type="text" class="npsn" placeholder="12345678" maxlength="8">
+          <label class="required">NPSN</label>
+          <!-- DI SINI SUDAH TIDAK ADA maxlength & validasi 8 digit -->
+          <input type="text" class="npsn" placeholder="Bisa 8 digit atau 16 digit (PAUD/TK)">
         </div>
         <div class="input-group">
           <label>Status</label>
@@ -123,7 +124,7 @@
         </div>
         <div class="input-group">
           <label>Catatan (jika ada)</label>
-          <textarea class="catatan" rows="2" placeholder="Tulis kendala atau keterangan tambahan..."></textarea>
+          <textarea class="catatan" rows="2" placeholder="Tulis keterangan tambahan..."></textarea>
         </div>
       </div>
     </div>
@@ -138,7 +139,7 @@
   </div>
 
   <script>
-    const ADMIN_WA = "6281383796300"; // Nomor WA Admin kamu
+    const ADMIN_WA = "6281383796300"; // Nomor WA Admin
     let entryCount = 1;
 
     function addEntry() {
@@ -154,11 +155,11 @@
         </div>
         <div class="input-group">
           <label class="required">Nama Sekolah</label>
-          <input type="text" class="namaSekolah" placeholder="Contoh: SMPN 1 Wonosari">
+          <input type="text" class="namaSekolah" placeholder="Contoh: TK Negeri Pembina">
         </div>
         <div class="input-group">
-          <label class="required">NPSN (8 digit)</label>
-          <input type="text" class="npsn" placeholder="12345678" maxlength="8">
+          <label class="required">NPSN</label>
+          <input type="text" class="npsn" placeholder="Bebas berapa digit pun">
         </div>
         <div class="input-group">
           <label>Status</label>
@@ -171,7 +172,7 @@
           </select>
         </div>
         <div class="input-group">
-          <label>Catatan (jika ada)</label>
+          <label>Catatan</label>
           <textarea class="catatan" rows="2"></textarea>
         </div>
       `;
@@ -210,18 +211,20 @@
         const npsn = e.querySelector('.npsn').value.trim();
         const status = e.querySelector('.keterangan').value;
         const catatan = e.querySelector('.catatan').value.trim();
-        if (nama && npsn.length === 8) {
+
+        // Hanya wajib nama sekolah & NPSN tidak boleh kosong
+        if (nama && npsn) {
           sekolah.push({ no: i+1, namaSekolah: nama, npsn, status, catatan });
           valid++;
         }
       });
 
-      if (valid === 0) return showStatus("Data sekolah tidak lengkap / NPSN harus 8 digit", "error"), null;
+      if (valid === 0) return showStatus("Isi minimal 1 sekolah dengan lengkap!", "error"), null;
 
       return { teknisi: { namaTeknisi, waTeknisi }, sekolah, jumlah: valid };
     }
 
-    function generateAndSendExcel() {
+    function submitAllData() {
       const data = collectData();
       if (!data) return;
 
@@ -236,36 +239,36 @@
         [], 
         ["No", "Nama Sekolah", "NPSN", "Status", "Catatan"]
       ];
-      data.sekolah.forEach(s => rows.push([s.no, s.namaSekolah, s.npsn, s.status, s.catatan]));
+      data.sekolah.forEach(s => rows.push([s.no, s.namaSekolah, s.npsn, s.status, s.catatan || ""]));
 
       const ws = XLSX.utils.aoa_to_sheet(rows);
-      ws['!cols'] = [{wch:6}, {wch:40}, {wch:12}, {wch:20}, {wch:40}];
+      ws['!cols'] = [{wch:6}, {wch:40}, {wch:20}, {wch:20}, {wch:40}]; // Kolom NPSN dilebarkan
       XLSX.utils.book_append_sheet(wb, ws, "Report");
 
-      const fileName = `Report_IFP_${data.teknisi.namaTeknisi.replace(/ /g,"_")}_${new Date().toISOString().slice(0,10)}.xlsx`;
+      const fileName = `Report_IFP_${data.teknisi.namaTeknisi.replace(/[^a-zA-Z0-9]/g,"_")}_${new Date().toISOString().slice(0,10)}.xlsx`;
       const blob = XLSX.write(wb, { bookType: 'xlsx', type: 'blob' });
-      XLSX.writeFile(wb, fileName); // auto download
+      XLSX.writeFile(wb, fileName);
 
-      // Kirim ke Admin WA
+      // Buka WhatsApp Admin
       const pesan = encodeURIComponent(
-`*REPORT INSTALASI IFP 2025*
+`*REPORT INSTALASI IFP 2025 - GUNUNGKIDUL*
 
 Nama Teknisi: *${data.teknisi.namaTeknisi}*
 WA: ${data.teknisi.waTeknisi}
 Tanggal: ${new Date().toLocaleDateString('id-ID')}
 Total Sekolah: ${data.jumlah}
 
-File Excel terlampir berisi detail lengkap semua sekolah.
+File Excel terlampir sudah berisi semua data.
 Terima kasih!`
       );
-
       window.open(`https://wa.me/${ADMIN_WA}?text=${pesan}`, '_blank');
 
       // Notifikasi sukses
       showStatus(`
-        <strong>SELESAI!</strong><br><br>
-        File Excel: <strong>${fileName}</strong> sudah terdownload<br><br>
-        WhatsApp Admin sudah terbuka → tinggal klik kirim (file otomatis terlampir di HP)
+        <strong>SELESAI 100%!</strong><br><br>
+        File Excel: <strong>${fileName}</strong> sudah terdownload otomatis<br><br>
+        WhatsApp Admin (081383796300) sudah terbuka<br>
+        Tinggal klik kirim → file Excel otomatis terlampir (khususnya di HP)
       `, "success");
     }
 
@@ -276,12 +279,6 @@ Terima kasih!`
       el.style.display = 'block';
     }
 
-    // Jalankan fungsi utama
-    function submitAllData() {
-      generateAndSendExcel();
-    }
-
-    // Init
     updateCounter();
   </script>
 </body>

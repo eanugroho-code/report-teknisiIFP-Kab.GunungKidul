@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Report Instalasi IFP - Gunungkidul</title>
+  <style>
+    body {font-family: Arial, sans-serif; background: #f0f9ff; margin:0; padding:20px;}
+    .container {max-width: 700px; margin:auto; background:white; padding:30px; border-radius:15px; box-shadow:0 10px 30px rgba(0,0,0,0.1);}
+    h1 {text-align:center; color:#1e40af;}
+    label {display:block; margin:15px 0 8px; font-weight:bold; color:#1f2937;}
+    input, textarea {width:100%; padding:12px; border:1px solid #ccc; border-radius:8px; font-size:16px; box-sizing:border-box;}
+    button {background:#059669; color:white; padding:14px 30px; border:none; border-radius:8px; font-size:18px; cursor:pointer; width:100%; margin-top:20px;}
+    button:hover {background:#047857;}
+    .status {margin-top:20px; padding:15px; border-radius:8px; text-align:center; font-weight:bold;}
+    .success {background:#d1fae5; color:#065f46;}
+    .error {background:#fee2e2; color:#991b1b;}
+    .loading {background:#dbeafe; color:#1e40af;}
+    .info {background:#fef3c7; color:#92400e; border:1px solid #f59e0b;}
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>REPORT INSTALASI IFP<br><small>Kabupaten Gunungkidul 2025</small></h1>
+  
+  <div class="info status" style="display:block; margin-bottom:20px;">
+    📱 Form ini bisa diisi offline. Data akan terkirim otomatis saat ada sinyal internet.<br>
+    Semua data masuk ke 1 spreadsheet pusat untuk koordinator.
+  </div>
+
+  <label>Nama Teknisi *</label>
+  <input type="text" id="namaTeknisi" placeholder="Nama lengkap teknisi" required>
+
+  <label>Nama Sekolah (Alokasi yang di-install) *</label>
+  <input type="text" id="namaSekolah" placeholder="Contoh: SMPN 1 Wonosari" required>
+
+  <label>No NPSN *</label>
+  <input type="text" id="npsn" placeholder="8 digit NPSN" maxlength="8" required>
+
+  <label>No WhatsApp Teknisi *</label>
+  <input type="tel" id="waTeknisi" placeholder="08xxxxxxxxxx" required>
+
+  <label>Keterangan (opsional)</label>
+  <textarea id="keterangan" rows="3" placeholder="Status: Selesai / Belum listrik / Masalah jaringan / dll. Bisa tambah catatan"></textarea>
+
+  <button onclick="kirimData()">📤 KIRIM REPORT</button>
+
+  <div id="status" class="status" style="display:none;"></div>
+</div>
+
+<script>
+  // GANTI DENGAN URL WEB APP DARI APPS SCRIPT KAMU
+  const WEB_APP_URL = "[PASTE_WEB_APP_URL_KAMU_DISINI]"; // Contoh: https://script.google.com/macros/s/AKfycb.../exec
+
+  function kirimData() {
+    const data = {
+      namaTeknisi: document.getElementById("namaTeknisi").value.trim(),
+      namaSekolah: document.getElementById("namaSekolah").value.trim(),
+      npsn: document.getElementById("npsn").value.trim(),
+      waTeknisi: document.getElementById("waTeknisi").value.trim(),
+      keterangan: document.getElementById("keterangan").value.trim()
+    };
+
+    // Validasi
+    if (!data.namaTeknisi || !data.namaSekolah || !data.npsn || !data.waTeknisi) {
+      showStatus("❌ Semua kolom wajib (*) harus diisi!", "error");
+      return;
+    }
+
+    // Cek koneksi & kirim
+    if (!navigator.onLine) {
+      showStatus("⚠️ Offline? Data disimpan sementara & akan terkirim otomatis nanti.", "info");
+      // Simpan ke localStorage untuk retry
+      simpanLocal(data);
+      return;
+    }
+
+    showStatus("⏳ Sedang mengirim data...", "loading");
+
+    fetch(WEB_APP_URL, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(data),
+      mode: "cors"  // Ganti ke 'no-cors' kalau ada masalah CORS
+    })
+    .then(response => response.json())
+    .then(result => {
+      if (result.status === "success") {
+        showStatus("✅ Data berhasil dikirim! Terima kasih, teknisi. Form siap untuk sekolah berikutnya.", "success");
+        kosongkanForm();
+      } else {
+        throw new Error(result.message);
+      }
+    })
+    .catch(error => {
+      console.error(error);
+      simpanLocal(data);  // Simpan lokal kalau gagal
+      showStatus("⚠️ Dikirim tapi ada error. Data tersimpan lokal & retry nanti. Coba lagi?", "error");
+    });
+
+    // Auto-retry kalau offline
+    window.addEventListener('online', retryKirim);
+  }
+
+  function simpanLocal(data) {
+    let queue = JSON.parse(localStorage.getItem('ifp_queue') || '[]');
+    queue.push({...data, timestamp: Date.now()});
+    localStorage.setItem('ifp_queue', JSON.stringify(queue));
+  }
+
+  function retryKirim() {
+    let queue = JSON.parse(localStorage.getItem('ifp_queue') || '[]');
+    if (queue.length > 0) {
+      queue.forEach(item => {
+        fetch(WEB_APP_URL, {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify(item)
+        }).then(() => {
+          // Hapus dari queue setelah sukses
+          queue = queue.filter(q => q.timestamp !== item.timestamp);
+          localStorage.setItem('ifp_queue', JSON.stringify(queue));
+        });
+      });
+      showStatus(`📤 Mengirim ${queue.length} data tertunda...`, "loading");
+    }
+  }
+
+  function showStatus(msg, type) {
+    const el = document.getElementById("status");
+    el.innerHTML = msg;
+    el.className = `status ${type}`;
+    el.style.display = "block";
+    // Auto-hide success setelah 5 detik
+    if (type === "success") setTimeout(() => el.style.display = "none", 5000);
+  }
+
+  function kosongkanForm() {
+    document.querySelectorAll("input, textarea").forEach(el => el.value = "");
+  }
+
+  // Cek queue saat load
+  window.onload = () => {
+    if (navigator.onLine && localStorage.getItem('ifp_queue')) {
+      retryKirim();
+    }
+  };
+</script>
+
+</body>
+</html>

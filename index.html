@@ -18,10 +18,14 @@
     .no{background:#5c6bc0;color:#fff;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold}
     .btn{padding:16px;border:none;border-radius:12px;font-size:18px;font-weight:bold;cursor:pointer;width:100%;margin:10px 0;color:#fff}
     .btn-add{background:#29b6f6}
-    .btn-kirim{background:#43a047;background:linear-gradient(45deg,#43a047,#2e7d32)}
+    .btn-download{background:#ff9800}
+    .btn-wa{background:#25d366;box-shadow:0 4px 15px rgba(37,211,102,0.4)}
+    .btn-wa:disabled{background:#999;cursor:not-allowed;opacity:0.6}
     .btn-hapus{background:#f44336}
-    .status{margin-top:20px;padding:20px;background:#d4edda;color:#155724;border-radius:12px;text-align:center;font-weight:bold;display:none}
     .counter{position:fixed;top:15px;right:15px;background:#fff;padding:12px 24px;border-radius:50px;box-shadow:0 5px 20px rgba(0,0,0,0.2);font-weight:bold;color:#5c6bc0;z-index:999}
+    .success-box{margin:25px 0;padding:25px;background:#e8f5e9;border:3px solid #4caf50;border-radius:15px;text-align:center;display:none}
+    .success-box h3{font-size:22px;margin:0 0 15px;color:#2e7d32}
+    .success-box p{font-size:16px;color:#1b5e20;margin:10px 0}
   </style>
 </head>
 <body>
@@ -31,7 +35,9 @@
 <div class="container">
   <h1>REPORT INSTALASI IFP 2025</h1>
   <center><span class="badge">KABUPATEN GUNUNGKIDUL</span></center>
-  <p style="text-align:center;color:#555;margin:15px 0">NPSN bebas berapa digit • Klik sekali → Excel langsung download → Kirim ke Admin</p>
+  <p style="text-align:center;color:#555;margin:15px 0">
+    NPSN bebas digit • Wajib download Excel dulu → baru bisa kirim ke Admin
+  </p>
 
   <b>DATA TEKNISI</b>
   <label class="required">Nama Teknisi</label>
@@ -49,10 +55,8 @@
       </div>
       <label class="required">Nama Sekolah</label>
       <input type="text" class="nama" placeholder="Contoh: SMPN 1 Wonosari">
-
       <label class="required">NPSN</label>
-      <input type="text" class="npsn" placeholder="Bebas berapa digit (8 atau 16)">
-
+      <input type="text" class="npsn" placeholder="Bebas berapa digit">
       <label>Status</label>
       <select class="status">
         <option value="Selesai">Selesai Terinstall</option>
@@ -61,7 +65,6 @@
         <option value="Jaringan">Masalah Jaringan</option>
         <option value="Lainnya">Lainnya</option>
       </select>
-
       <label>Catatan (opsional)</label>
       <textarea class="catatan" rows="2"></textarea>
     </div>
@@ -69,16 +72,27 @@
 
   <button type="button" class="btn btn-add" onclick="tambahSekolah()">+ Tambah Sekolah</button>
 
-  <button type="button" class="btn btn-kirim" onclick="downloadDanKirimKeAdmin()">
-    DOWNLOAD EXCEL & KIRIM KE ADMIN SEKARANG
+  <!-- Tombol utama -->
+  <button type="button" class="btn btn-download" onclick="downloadExcelDulu()">
+    DOWNLOAD FILE EXCEL SEKARANG
   </button>
 
-  <div id="status" class="status"></div>
+  <!-- Box konfirmasi setelah download -->
+  <div id="konfirmasiDownload" class="success-box">
+    <h3>FILE EXCEL SUDAH BERHASIL DI-DOWNLOAD!</h3>
+    <p id="namaFileInfo"></p>
+    <p>Sekarang lanjutkan kirim ke Admin WhatsApp</p>
+    <button type="button" class="btn btn-wa" id="btnLanjutWA">
+      LANJUTKAN KE WHATSAPP ADMIN
+    </button>
+  </div>
 </div>
 
 <script>
-  const ADMIN = "6281383796300"; // Nomor WA kamu
+  const ADMIN_WA = "6281383796300";
   let jumlahSekolah = 1;
+  let dataReport = null;        // Menyimpan data sementara
+  let namaFileExcel = "";       // Nama file yang didownload
 
   function tambahSekolah() {
     jumlahSekolah++;
@@ -122,7 +136,8 @@
     document.getElementById('counter').textContent = 'Sekolah: ' + jumlahSekolah;
   }
 
-  function downloadDanKirimKeAdmin() {
+  // LANGKAH 1: Download Excel dulu
+  function downloadExcelDulu() {
     const nama = document.getElementById('namaTeknisi').value.trim();
     const wa = document.getElementById('waTeknisi').value.trim();
     if (!nama || !wa) return alert("Isi dulu Nama & WA Teknisi!");
@@ -146,7 +161,10 @@
 
     if (valid === 0) return alert("Isi minimal 1 sekolah dengan lengkap!");
 
-    // 1. BUAT & DOWNLOAD EXCEL DULU
+    // Simpan data sementara
+    dataReport = { nama, wa, data, valid };
+
+    // Buat & download Excel
     const wb = XLSX.utils.book_new();
     const rows = [
       ["REPORT INSTALASI IFP GUNUNGKIDUL 2025"],
@@ -160,11 +178,21 @@
     const ws = XLSX.utils.aoa_to_sheet(rows);
     ws['!cols'] = [{wch:6},{wch:40},{wch:22},{wch:20},{wch:40}];
     XLSX.utils.book_append_sheet(wb, ws, "Report");
-    
-    const namaFile = `Report_IFP_${nama.replace(/[^a-zA-Z0-9]/g,"_")}_${new Date().toISOString().slice(0,10)}.xlsx`;
-    XLSX.writeFile(wb, namaFile);
 
-    // 2. LANGSUNG BUKA WA ADMIN + PESAN SIAP
+    namaFileExcel = `Report_IFP_${nama.replace(/[^a-zA-Z0-9]/g,"_")}_${new Date().toISOString().slice(0,10)}.xlsx`;
+    XLSX.writeFile(wb, namaFileExcel);
+
+    // Tampilkan konfirmasi + aktifkan tombol WA
+    document.getElementById('namaFileInfo').textContent = `File: ${namaFileExcel}`;
+    document.getElementById('konfirmasiDownload').style.display = 'block';
+    document.getElementById('btnLanjutWA').disabled = false;
+  }
+
+  // LANGKAH 2: Setelah download, baru boleh ke WA
+  document.getElementById('btnLanjutWA').addEventListener('click', function() {
+    if (!dataReport) return;
+
+    const { nama, wa, valid } = dataReport;
     const pesan = encodeURIComponent(
 `*REPORT INSTALASI IFP 2025 - GUNUNGKIDUL*
 
@@ -173,23 +201,13 @@ WA: ${wa}
 Tanggal: ${new Date().toLocaleDateString('id-ID')}
 Total: ${valid} sekolah
 
-File Excel sudah ter-download di HP Anda.
-Silakan lampirkan file "${namaFile}" ini dan kirim. Terima kasih!`
+File Excel "${namaFileExcel}" sudah ter-download.
+Silakan lampirkan file tersebut dan kirim ke Admin.
+Terima kasih!`
     );
 
-    setTimeout(() => {
-      window.location.href = "https://wa.me/" + ADMIN + "?text=" + pesan;
-    }, 1000);
-
-    // 3. TAMPILKAN STATUS SUKSES
-    document.getElementById('status').innerHTML = `
-      <strong>SELESAI!</strong><br><br>
-      File Excel <b>${namaFile}</b> sudah ter-download otomatis<br><br>
-      WhatsApp Admin sedang dibuka...<br>
-      Tinggal pilih file yang baru di-download → klik kirim
-    `;
-    document.getElementById('status').style.display = 'block';
-  }
+    window.open(`https://wa.me/${ADMIN_WA}?text=${pesan}`, '_blank');
+  });
 </script>
 </body>
 </html>
